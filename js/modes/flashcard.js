@@ -1,9 +1,17 @@
 // js/modes/flashcard.js
+import { lookupSentence } from '../word-index.js';
 
-export function render(container, card, onResult) {
+export async function render(container, card, onResult) {
   const { word } = card;
   let flipped = false;
   let answered = false;
+
+  const bookSentence = await lookupSentence(word.es);
+  const contextHtml = bookSentence
+    ? `<p class="muted" style="font-style:italic;font-size:0.85rem;margin-top:8px">"${bookSentence}"</p>`
+    : word.example
+      ? `<p class="muted" style="font-style:italic;margin-top:8px">"${word.example}"</p>`
+      : '';
 
   container.innerHTML = `
     <div class="flashcard-wrap" id="fc-wrap" title="Click to flip">
@@ -15,7 +23,7 @@ export function render(container, card, onResult) {
         </div>
         <div class="flashcard-back">
           <div class="flashcard-word" style="font-size:1.8rem">${word.en}</div>
-          <p class="muted" style="font-style:italic">"${word.example}"</p>
+          ${contextHtml}
         </div>
       </div>
     </div>

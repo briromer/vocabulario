@@ -1,15 +1,24 @@
 // js/modes/type.js
-import { checkAnswer } from '../fuzzy.js';
+import { checkAnswer }    from '../fuzzy.js';
+import { lookupSentence } from '../word-index.js';
 
-export function render(container, card, onResult) {
+export async function render(container, card, onResult) {
   const { word } = card;
   let submitted = false;
+
+  // Look up a real book sentence (async, resolves quickly from cache)
+  const bookSentence = await lookupSentence(word.es);
+  const contextHtml = bookSentence
+    ? `<p class="muted" style="margin-bottom:20px;font-style:italic;font-size:0.9rem">"${bookSentence}"</p>`
+    : word.example
+      ? `<p class="muted" style="margin-bottom:20px;font-style:italic">"${word.example}"</p>`
+      : '';
 
   container.innerHTML = `
     <div class="card" style="text-align:center">
       <div class="tag">${word.pos}</div>
       <div class="flashcard-word" style="margin:20px 0">${word.es}</div>
-      <p class="muted" style="margin-bottom:20px;font-style:italic">"${word.example}"</p>
+      ${contextHtml}
     </div>
 
     <div style="display:flex;flex-direction:column;gap:12px">
