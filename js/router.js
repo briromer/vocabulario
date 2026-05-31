@@ -6,6 +6,8 @@ import { scoreCard }          from './srs.js';
 import { render as renderType }       from './modes/type.js';
 import { render as renderFlashcard }  from './modes/flashcard.js';
 import { render as renderMC }         from './modes/multiple-choice.js';
+import { getConfig, saveConfig, isConfigured } from './config.js';
+import { loadSheetWords, clearSheetCache }      from './sheets.js';
 
 const MODE_RENDERERS = {
   type:      renderType,
@@ -18,6 +20,7 @@ export class Router {
     this._root = root;
     this._session = null;
     this._mode = null;
+    this._words = WORDS; // fallback until sheet loads
   }
 
   go(screen, params = {}) {
@@ -27,6 +30,7 @@ export class Router {
       case 'study':       return this._showStudy(params.mode);
       case 'session-end': return this._showSessionEnd();
       case 'stats':       return this._showStats();
+      case 'settings':    return this._showSettings();
     }
   }
 
@@ -36,17 +40,28 @@ export class Router {
     const totalReviewed = Object.values(allCards).reduce((s, c) => s + c.totalReviews, 0);
     const totalCorrect  = Object.values(allCards).reduce((s, c) => s + c.totalCorrect, 0);
     const accuracy = totalReviewed > 0 ? Math.round(totalCorrect / totalReviewed * 100) : 0;
+    const configured = isConfigured();
 
     this._root.innerHTML = `
       <header class="app-header">
         <h1>Vocabulario</h1>
-        <button class="btn btn-secondary" id="btn-stats">Stats</button>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-secondary" id="btn-stats">Stats</button>
+          <button class="btn btn-secondary" id="btn-settings" title="Settings">⚙</button>
+        </div>
       </header>
+
+      ${!configured ? `
+        <div style="background:rgba(99,102,241,0.1);border:1px solid var(--accent);border-radius:var(--radius-sm);padding:12px 16px;font-size:0.9rem">
+          <strong>Connect your Google Sheet</strong> to study your own vocabulary.
+          <button class="btn" id="btn-configure" style="color:var(--accent);padding:0 4px;font-size:0.9rem">Configure →</button>
+        </div>
+      ` : ''}
 
       <div class="stat-grid">
         <div class="stat-box">
-          <div class="stat-value">${WORDS.length}</div>
-          <div class="stat-label">Words</div>
+          <div class="stat-value">${this._words.length}</div>
+          <div class="stat-label">${configured ? 'Sheet Words' : 'Demo Words'}</div>
         </div>
         <div class="stat-box">
           <div class="stat-value">${sessions.length}</div>
@@ -63,12 +78,14 @@ export class Router {
       </button>
 
       <p class="muted" style="text-align:center">
-        ${Object.keys(allCards).length} of ${WORDS.length} words reviewed
+        ${Object.keys(allCards).length} of ${this._words.length} words reviewed
       </p>
     `;
 
     this._root.querySelector('#btn-start').addEventListener('click', () => this.go('mode-select'));
     this._root.querySelector('#btn-stats').addEventListener('click', () => this.go('stats'));
+    this._root.querySelector('#btn-settings').addEventListener('click', () => this.go('settings'));
+    this._root.querySelector('#btn-configure')?.addEventListener('click', () => this.go('settings'));
   }
 
   _showModeSelect() {
@@ -104,10 +121,32 @@ export class Router {
     });
   }
 
-  _showStudy(mode) {
+  async _showStudy(mode) {
     this._mode = mode;
+
+    // Load vocab (async if Sheet configured)
+    if (isConfigured()) {
+      this._root.innerHTML = `<div style="text-align:center;padding:60px 0"><p class="muted">Loading vocabulary…</p></div>`;
+      try {
+        this._words = await loadSheetWords();
+      } catch (err) {
+        this._root.innerHTML = `
+          <div style="text-align:center;padding:40px 0">
+            <p style="color:var(--error);margin-bottom:16px">Failed to load sheet: ${err.message}</p>
+            <div style="display:flex;gap:12px;justify-content:center">
+              <button class="btn btn-secondary" id="btn-settings">Check Settings</button>
+              <button class="btn btn-secondary" id="btn-home">Home</button>
+            </div>
+          </div>
+        `;
+        this._root.querySelector('#btn-settings').addEventListener('click', () => this.go('settings'));
+        this._root.querySelector('#btn-home').addEventListener('click', () => this.go('home'));
+        return;
+      }
+    }
+
     const allCards = store.getAllCards();
-    this._session = new Session({ allCards, words: WORDS });
+    this._session = new Session({ allCards, words: this._words });
 
     if (this._session.total() === 0) {
       this._root.innerHTML = `
@@ -174,7 +213,7 @@ export class Router {
         store.saveCard(updated);
       }
       if (advance) this._nextCard();
-    });
+    }, this._words);
   }
 
   _endSession() {
@@ -294,6 +333,100 @@ export class Router {
         store.clear();
         this.go('home');
       }
+    });
+  }
+
+  _showSettings() {
+    const { apiKey, sheetId } = getConfig();
+
+    this._root.innerHTML = `
+      <header class="app-header">
+        <button class="btn btn-secondary" id="btn-back">← Back</button>
+        <h2 style="flex:1;text-align:center">Settings</h2>
+        <div style="width:64px"></div>
+      </header>
+
+      <div class="card" style="display:flex;flex-direction:column;gap:16px">
+        <div>
+          <label style="display:block;font-size:0.85rem;color:var(--muted);margin-bottom:6px">
+            Google Sheets API Key
+          </label>
+          <input
+            id="inp-apikey"
+            class="input"
+            type="password"
+            placeholder="AIza…"
+            value="${apiKey}"
+            autocomplete="off"
+          />
+          <p class="muted" style="font-size:0.78rem;margin-top:4px">
+            Create a key in <a href="https://console.cloud.google.com" target="_blank" style="color:var(--accent)">Google Cloud Console</a> with Sheets API enabled.
+          </p>
+        </div>
+
+        <div>
+          <label style="display:block;font-size:0.85rem;color:var(--muted);margin-bottom:6px">
+            Sheet ID
+          </label>
+          <input
+            id="inp-sheetid"
+            class="input"
+            type="text"
+            value="${sheetId}"
+            autocomplete="off"
+          />
+          <p class="muted" style="font-size:0.78rem;margin-top:4px">
+            From the sheet URL: /spreadsheets/d/<strong>SHEET_ID</strong>/edit
+          </p>
+        </div>
+
+        <p class="muted" style="font-size:0.78rem">
+          Sheet must be public (anyone with link can view). Columns: A = Spanish, B = English, C = part of speech (optional), D = example sentence (optional). Row 1 is the header and is skipped.
+        </p>
+
+        <button class="btn btn-primary btn-full" id="btn-save">Save</button>
+        <button class="btn btn-secondary btn-full" id="btn-clear-cache">Clear Vocabulary Cache</button>
+        <div id="settings-msg" style="display:none;font-size:0.9rem;text-align:center"></div>
+      </div>
+    `;
+
+    this._root.querySelector('#btn-back').addEventListener('click', () => this.go('home'));
+
+    this._root.querySelector('#btn-save').addEventListener('click', async () => {
+      const newApiKey  = this._root.querySelector('#inp-apikey').value.trim();
+      const newSheetId = this._root.querySelector('#inp-sheetid').value.trim();
+      const msg = this._root.querySelector('#settings-msg');
+
+      saveConfig({ apiKey: newApiKey, sheetId: newSheetId });
+      clearSheetCache();
+
+      if (newApiKey && newSheetId) {
+        msg.style.display = 'block';
+        msg.style.color = 'var(--muted)';
+        msg.textContent = 'Testing connection…';
+        try {
+          const words = await loadSheetWords();
+          this._words = words;
+          msg.style.color = 'var(--success)';
+          msg.textContent = `Connected! ${words.length} words loaded.`;
+        } catch (err) {
+          msg.style.color = 'var(--error)';
+          msg.textContent = `Error: ${err.message}`;
+        }
+      } else {
+        this._words = WORDS;
+        msg.style.display = 'block';
+        msg.style.color = 'var(--muted)';
+        msg.textContent = 'Saved. Using demo words (no API key set).';
+      }
+    });
+
+    this._root.querySelector('#btn-clear-cache').addEventListener('click', () => {
+      clearSheetCache();
+      const msg = this._root.querySelector('#settings-msg');
+      msg.style.display = 'block';
+      msg.style.color = 'var(--muted)';
+      msg.textContent = 'Cache cleared. Next study session will re-fetch.';
     });
   }
 }

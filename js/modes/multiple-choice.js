@@ -15,9 +15,9 @@ function shuffle(arr) {
   return a;
 }
 
-export function render(container, card, onResult) {
+export function render(container, card, onResult, allWords = WORDS) {
   const { word } = card;
-  const distractors = pickDistractors(word, WORDS);
+  const distractors = pickDistractors(word, allWords);
   const options = shuffle([word, ...distractors]);
   let answered = false;
 
