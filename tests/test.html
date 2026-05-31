@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Vocabulario Tests</title>
+  <style>
+    body { font-family: monospace; background: #0f172a; color: #f1f5f9; padding: 24px; }
+    .pass { color: #22c55e; }
+    .fail { color: #ef4444; }
+    .suite { margin: 16px 0 4px; font-weight: bold; color: #6366f1; }
+    #summary { margin-top: 24px; font-size: 1.1rem; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h2>Vocabulario Test Suite</h2>
+  <div id="results"></div>
+  <div id="summary"></div>
+  <script type="module">
+    import { runSrsTests }     from './srs.test.js';
+    import { runFuzzyTests }   from './fuzzy.test.js';
+    import { runStoreTests }   from './store.test.js';
+    import { runSessionTests } from './session.test.js';
+
+    const results = document.getElementById('results');
+    const summary = document.getElementById('summary');
+    let passed = 0, failed = 0;
+
+    function suite(name) {
+      const el = document.createElement('div');
+      el.className = 'suite';
+      el.textContent = `▶ ${name}`;
+      results.appendChild(el);
+    }
+
+    function report(name, ok, err) {
+      const el = document.createElement('div');
+      el.className = ok ? 'pass' : 'fail';
+      el.textContent = `  ${ok ? '✓' : '✗'} ${name}${ok ? '' : ' — ' + err}`;
+      results.appendChild(el);
+      ok ? passed++ : failed++;
+    }
+
+    function assert(condition, msg) {
+      if (!condition) throw new Error(msg || 'assertion failed');
+    }
+
+    const ctx = { suite, report, assert };
+
+    await runSrsTests(ctx);
+    await runFuzzyTests(ctx);
+    await runStoreTests(ctx);
+    await runSessionTests(ctx);
+
+    summary.textContent = `${passed + failed} tests: ${passed} passed, ${failed} failed`;
+    summary.style.color = failed === 0 ? '#22c55e' : '#ef4444';
+  </script>
+</body>
+</html>
