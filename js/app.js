@@ -1,2 +1,6 @@
-// js/app.js — entry point (filled out in Task 8)
-console.log('Vocabulario loading...');
+// js/app.js
+import { Router } from './router.js';
+
+const root = document.getElementById('app');
+const router = new Router(root);
+router.go('home');
