@@ -1,37 +1,47 @@
 # Roadmap
 
+## Shipped
+
+- **Google Sheets vocabulary source** — live CSV export, 5-min localStorage cache, no API key
+- **Book context sentences** — `scripts/build-index.js` extracts sentences from *Cien años de soledad*, stored in `data/word-index.json`; Type and Flashcard modes show real book sentences styled as typeset quotations
+- **Settings screen** — Sheet ID field, session size (default 20), "Save & Test", "Clear Vocabulary Cache"
+- **Design system** — OKLCH aurora palette (midnight Norway: dark sky, amber accent, teal/green aurora gradients), DM Serif Display + DM Sans typography, SVG feTurbulence grain overlay, 3-layer radial background
+- **Study modes** — Type, Flashcard (blur-dissolve flip), Multiple Choice; keyboard shortcuts throughout
+- **Spaced repetition** — SM-2 algorithm, due cards first then new words, configurable session size
+- **Animation pass** — Screen transitions, progress bar with glow, error shake, correct glow pulse, flashcard action reveal
+- **Delight pass** — Book sentences in DM Serif Display italic, time-of-day Spanish greeting, session-end literary line, console easter egg
+
+---
+
 ## High Priority
 
-### Google Sheets Vocabulary Source
-The word list is currently hardcoded in `js/words.js`. Original design: pull from a public Google Sheet (Spanish + English columns) via Sheets API v4 with an API key (no OAuth). Words would be cached in localStorage with a 5-minute TTL.
+### Index Quality Report
+When `node scripts/build-index.js` runs, output a quality report alongside the index:
 
-Sheet: `https://docs.google.com/spreadsheets/d/10cfmWcHISq9_wkzBct1y-G9rcH66xoj-0xipFKrPgvg`
+- **New words** — words on the sheet not seen in the previous index build
+- **Spelling suggestions** — Spanish words that look suspect (e.g. `indigacion` → did you mean `indagación`?)
+- **Translation suggestions** — English meanings that may be wrong or imprecise: duplicates, very short values, POS mismatches
+- **Not-found words** — words with zero book-sentence matches, flagged for review
 
-API call:
-```
-https://sheets.googleapis.com/v4/spreadsheets/{sheetId}/values/Sheet1!A:B?key={apiKey}
-```
-
-### Book Context Sentences
-100anos.pdf is at the project root. Plan: extract with `pdftotext -enc UTF-8 100anos.pdf data/cien-anos.txt`, then run a one-time Node.js build script to produce `src/assets/word-index.json` — a map of `normalizedWord → [sentence1, sentence2, ...]`. The Type mode would then show a real sentence from the book instead of the placeholder example sentences.
+Output to stdout and optionally `data/index-report.txt` (gitignored). Report only — no auto-edits.
 
 ### EN→ES Direction
-Currently ES→EN only (see Spanish word, give English meaning). Add reverse: see English word, type Spanish. No book context needed for this direction — pure vocab recall. Mode select would offer both directions per study mode.
+Currently ES→EN only. Add reverse: see English word, type Spanish. No book context needed. Mode select offers both directions per study mode.
 
-### Settings Screen
-UI for entering Google Sheets API key and Sheet ID (stored in localStorage). Includes a "clear cache" button to force re-fetch from Sheets.
+---
 
 ## Medium Priority
 
 ### Word List View
-Searchable table of all vocabulary: Spanish word, English, part of speech, SRS status (new / due / learned), accuracy %. Click a word to expand and see the book context sentence(s).
+Searchable table: Spanish word, English, part of speech, SRS status (new / due / learned), accuracy %. Click to expand and see book context sentences.
 
 ### Deploy to Static Host
-No build step needed — app is already static. Target: GitHub Pages or Netlify. Add a `.gitignore` for the PDF (large, copyrighted).
+No build step needed — already static. Target: GitHub Pages or Netlify.
+
+---
 
 ## Low Priority / Nice to Have
 
-- PWA manifest + service worker for offline use and mobile home screen install
-- Export/import progress as JSON (backup)
-- Word-level stats view (hardest words, longest streak per word)
-- Dark/light theme toggle (currently dark only)
+- PWA manifest + service worker for offline use and mobile install
+- Export/import progress as JSON
+- Word-level stats view (hardest words, longest streak)

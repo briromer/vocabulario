@@ -8,9 +8,9 @@ export async function render(container, card, onResult) {
 
   const bookSentence = await lookupSentence(word.es);
   const contextHtml = bookSentence
-    ? `<p class="muted" style="font-style:italic;font-size:0.85rem;margin-top:8px">"${bookSentence}"</p>`
+    ? `<p class="book-sentence" style="margin-top:14px">“${bookSentence}”</p>`
     : word.example
-      ? `<p class="muted" style="font-style:italic;margin-top:8px">"${word.example}"</p>`
+      ? `<p class="book-sentence" style="margin-top:14px">“${word.example}”</p>`
       : '';
 
   container.innerHTML = `
@@ -46,7 +46,10 @@ export async function render(container, card, onResult) {
     if (answered) return;
     flipped = !flipped;
     wrap.classList.toggle('flipped', flipped);
-    if (flipped) actions.style.display = 'block';
+    if (flipped && actions.style.display !== 'block') {
+      actions.style.display = 'block';
+      actions.classList.add('reveal-up');
+    }
   });
 
   function handleKey(e) {

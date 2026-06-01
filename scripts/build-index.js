@@ -73,7 +73,7 @@ function extractSentences(text) {
     const parts = joined.split(/(?<=[.!?»])\s+(?=[«"¡¿A-ZÁÉÍÓÚÜÑ])/u);
     for (const s of parts) {
       const clean = s.trim();
-      if (clean.length >= 40 && clean.length <= 400) {
+      if (clean.length >= 40 && clean.length <= 600) {
         sentences.push(clean);
       }
     }

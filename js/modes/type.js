@@ -9,15 +9,15 @@ export async function render(container, card, onResult) {
   // Look up a real book sentence (async, resolves quickly from cache)
   const bookSentence = await lookupSentence(word.es);
   const contextHtml = bookSentence
-    ? `<p class="muted" style="margin-bottom:20px;font-style:italic;font-size:0.9rem">"${bookSentence}"</p>`
+    ? `<p class="book-sentence" style="margin-bottom:16px">"${bookSentence}"</p>`
     : word.example
-      ? `<p class="muted" style="margin-bottom:20px;font-style:italic">"${word.example}"</p>`
+      ? `<p class="book-sentence" style="margin-bottom:16px">"${word.example}"</p>`
       : '';
 
   container.innerHTML = `
-    <div class="card" style="text-align:center">
+    <div class="card" style="text-align:center;padding:20px 28px">
       <div class="tag">${word.pos}</div>
-      <div class="flashcard-word" style="margin:20px 0">${word.es}</div>
+      <div class="flashcard-word" style="margin:12px 0 8px">${word.es}</div>
       ${contextHtml}
     </div>
 
@@ -58,18 +58,21 @@ export async function render(container, card, onResult) {
     correct = result !== 'wrong';
 
     input.classList.add(correct ? 'correct' : 'wrong');
+    input.classList.add(correct ? 'animate-correct' : 'animate-shake');
     submit.style.display = 'none';
     feedback.style.display = 'block';
+    feedback.classList.add('reveal-up');
 
     if (result === 'exact') {
       feedback.innerHTML = `<div class="feedback correct">Correct! <strong>${word.en}</strong></div>`;
     } else if (result === 'fuzzy') {
-      feedback.innerHTML = `<div class="feedback correct">Close enough! The answer is <strong>${word.en}</strong></div>`;
+      feedback.innerHTML = `<div class="feedback correct">Close enough — <strong>${word.en}</strong></div>`;
     } else {
       feedback.innerHTML = `<div class="feedback wrong">The answer is <strong>${word.en}</strong></div>`;
     }
 
     next.style.display = 'block';
+    next.classList.add('reveal-up');
     next.focus();
     onResult({ correct, card });
   }

@@ -1,3 +1,9 @@
 100anos.pdf
 data/cien-anos.txt
 data/word-index.json
+
+# Tool dirs
+.claude/
+.impeccable/
+.superpowers/
+docs/superpowers
