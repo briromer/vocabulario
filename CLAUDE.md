@@ -7,6 +7,7 @@ Spanish vocabulary study app. Vanilla JS, no build step, no framework. All state
 ```bash
 python3 -m http.server 8787   # http://localhost:8787
 # Tests: open tests/test.html in browser
+# Live: https://briromer.github.io/vocabulario/
 ```
 
 ## Word Index (Book Context Sentences)
@@ -32,7 +33,7 @@ Sheet columns: A = Spanish, B = English, C = part of speech (optional), D = exam
 - **No build step.** Files are served directly. No npm, no Vite, no bundler.
 - **ES modules.** All JS uses `import`/`export`. Must be served over HTTP (not `file://`).
 - **Tests are browser-based.** `tests/test.html` runs in-browser. No Node.js test runner.
-- **Study mode renderers are async.** `render(container, card, onResult, allWords)` — async because they look up book sentences. Router calls without await (safe: `onResult` fires from user interaction, always after render settles).
+- **Study mode renderers are async.** `render(container, card, onResult, allWords, direction)` — async because they look up book sentences. `direction` is `'es-en'` or `'en-es'`. Router calls without await (safe: `onResult` fires from user interaction, always after render settles).
 - **SRS state lives in localStorage** under `vocab:cards` and `vocab:sessions`. Use `Store` class — never touch localStorage directly.
 
 ## Architecture
@@ -46,7 +47,7 @@ router.js           orchestrates screens, loads vocab (sheets.js), tracks SRS af
   └── fuzzy.js      answer checking: exact / fuzzy (Levenshtein ≤ 2) / wrong
   └── sheets.js     fetches vocab CSV, caches in localStorage
   └── word-index.js loads data/word-index.json, exposes lookupSentence(es)
-  └── config.js     sheet ID persistence
+  └── config.js     persists sheet ID, session size, direction (es-en/en-es)
 ```
 
 ## Coding Conventions
