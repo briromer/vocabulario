@@ -83,12 +83,12 @@ export class Router {
       </div>
 
       <div style="text-align:center;padding:4px 8px">
-        <p style="font-family:'EB Garamond',Georgia,serif;font-style:italic;font-size:1.3rem;line-height:1.7;color:var(--muted);max-width:400px;margin:0 auto">${(q => `«${q}»`)([
+        <p style="font-family:'EB Garamond',Georgia,serif;font-style:italic;font-size:1.3rem;line-height:1.7;color:var(--text);opacity:0.72;max-width:400px;margin:0 auto">${(q => `«${q}»`)([
           'Muchos años después, frente al pelotón de fusilamiento, el coronel Aureliano Buendía había de recordar aquella tarde remota en que su padre lo llevó a conocer el hielo.',
           'El secreto de una buena vejez no es otra cosa que un pacto honrado con la soledad.',
           'Las estirpes condenadas a cien años de soledad no tenían una segunda oportunidad sobre la tierra.',
         ][Math.floor(Math.random() * 3)])}</p>
-        <p style="font-family:'EB Garamond',Georgia,serif;font-size:0.85rem;color:var(--muted);opacity:0.55;margin-top:8px">— Gabriel García Márquez</p>
+        <p style="font-family:'EB Garamond',Georgia,serif;font-size:0.85rem;color:var(--muted);margin-top:8px">— Gabriel García Márquez</p>
       </div>
 
       <div style="display:flex;flex-direction:column;gap:16px">
