@@ -27,3 +27,11 @@ export function getSessionSize() {
 export function saveSessionSize(n) {
   saveConfig({ sessionSize: Math.max(1, Math.min(200, parseInt(n, 10) || DEFAULT_SESSION_SIZE)) });
 }
+
+export function getDirection() {
+  return getConfig().direction === 'en-es' ? 'en-es' : 'es-en';
+}
+
+export function saveDirection(dir) {
+  saveConfig({ direction: dir === 'en-es' ? 'en-es' : 'es-en' });
+}

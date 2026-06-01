@@ -1,6 +1,8 @@
 100anos.pdf
 data/cien-anos.txt
 data/word-index.json
+data/word-snapshot.json
+data/index-report.txt
 
 # Tool dirs
 .claude/

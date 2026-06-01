@@ -1,9 +1,8 @@
 // js/modes/multiple-choice.js
 import { WORDS } from '../words.js';
 
-function pickDistractors(correct, allWords, count = 3) {
-  const pool = allWords.filter(w => w.en !== correct.en);
-  return pool.sort(() => Math.random() - 0.5).slice(0, count);
+function pickDistractors(correct, allWords, field, count = 3) {
+  return allWords.filter(w => w[field] !== correct[field]).sort(() => Math.random() - 0.5).slice(0, count);
 }
 
 function shuffle(arr) {
@@ -15,22 +14,25 @@ function shuffle(arr) {
   return a;
 }
 
-export function render(container, card, onResult, allWords = WORDS) {
+export function render(container, card, onResult, allWords = WORDS, direction = 'es-en') {
   const { word } = card;
-  const distractors = pickDistractors(word, allWords);
+  const enEs = direction === 'en-es';
+  const field = enEs ? 'es' : 'en';
+
+  const distractors = pickDistractors(word, allWords, field);
   const options = shuffle([word, ...distractors]);
   let answered = false;
 
   const optionsHtml = options.map((w, i) => `
     <button class="mc-option" data-id="${w.id}" data-correct="${w.id === word.id}">
-      <span class="mc-label">${String.fromCharCode(65 + i)}</span>${w.en}
+      <span class="mc-label">${String.fromCharCode(65 + i)}</span>${w[field]}
     </button>
   `).join('');
 
   container.innerHTML = `
     <div class="card" style="text-align:center;padding:20px 28px">
-      <div class="tag">${word.pos}</div>
-      <div class="flashcard-word" style="margin:12px 0 0">${word.es}</div>
+      <!-- <div class="tag">${word.pos}</div> -->
+      <div class="flashcard-word" style="margin:12px 0 0">${enEs ? word.en : word.es}</div>
     </div>
 
     <div class="mc-options">${optionsHtml}</div>

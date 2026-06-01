@@ -2,23 +2,30 @@
 import { checkAnswer }    from '../fuzzy.js';
 import { lookupSentence } from '../word-index.js';
 
-export async function render(container, card, onResult) {
+function highlightWord(sentence, word) {
+  const escaped = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return sentence.replace(new RegExp(`(${escaped})`, 'gi'), '<strong>$1</strong>');
+}
+
+export async function render(container, card, onResult, allWords, direction = 'es-en') {
   const { word } = card;
+  const enEs = direction === 'en-es';
   let submitted = false;
 
-  // Look up a real book sentence (async, resolves quickly from cache)
   const bookSentence = await lookupSentence(word.es);
-  const contextHtml = bookSentence
-    ? `<p class="book-sentence" style="margin-bottom:16px">"${bookSentence}"</p>`
-    : word.example
-      ? `<p class="book-sentence" style="margin-bottom:16px">"${word.example}"</p>`
-      : '';
+  const rawSentence = bookSentence || word.example || null;
+  const contextHtml = rawSentence
+    ? `<p class="book-sentence" style="margin-bottom:16px">«${highlightWord(rawSentence, word.es)}»</p>`
+    : '';
+
+  // In EN→ES mode, book sentence reveals the Spanish answer — show after submission only
+  const cardContextHtml = enEs ? '' : contextHtml;
 
   container.innerHTML = `
     <div class="card" style="text-align:center;padding:20px 28px">
-      <div class="tag">${word.pos}</div>
-      <div class="flashcard-word" style="margin:12px 0 8px">${word.es}</div>
-      ${contextHtml}
+      <!-- <div class="tag">${word.pos}</div> -->
+      <div class="flashcard-word" style="margin:12px 0 8px">${enEs ? word.en : word.es}</div>
+      ${cardContextHtml}
     </div>
 
     <div style="display:flex;flex-direction:column;gap:12px">
@@ -26,7 +33,7 @@ export async function render(container, card, onResult) {
         id="type-input"
         class="input"
         type="text"
-        placeholder="Type the English meaning…"
+        placeholder="${enEs ? 'Type the Spanish word…' : 'Type the English meaning…'}"
         autocomplete="off"
         autocorrect="off"
         spellcheck="false"
@@ -47,6 +54,7 @@ export async function render(container, card, onResult) {
   input.focus();
 
   let correct;
+  const correctAnswer = enEs ? word.es : word.en;
 
   function doSubmit() {
     if (submitted) return;
@@ -54,7 +62,7 @@ export async function render(container, card, onResult) {
     if (!val) return;
     submitted = true;
 
-    const result = checkAnswer(val, word.en);
+    const result = checkAnswer(val, correctAnswer);
     correct = result !== 'wrong';
 
     input.classList.add(correct ? 'correct' : 'wrong');
@@ -63,12 +71,17 @@ export async function render(container, card, onResult) {
     feedback.style.display = 'block';
     feedback.classList.add('reveal-up');
 
+    // In EN→ES mode, show book sentence after answering as a memory anchor
+    const postContextHtml = enEs && contextHtml
+      ? `<div style="margin-top:10px">${contextHtml}</div>`
+      : '';
+
     if (result === 'exact') {
-      feedback.innerHTML = `<div class="feedback correct">Correct! <strong>${word.en}</strong></div>`;
+      feedback.innerHTML = `<div class="feedback correct"><span class="feedback-verdict">✓ Correct</span><span class="feedback-answer">${correctAnswer}</span></div>${postContextHtml}`;
     } else if (result === 'fuzzy') {
-      feedback.innerHTML = `<div class="feedback correct">Close enough — <strong>${word.en}</strong></div>`;
+      feedback.innerHTML = `<div class="feedback fuzzy"><span class="feedback-verdict">≈ Close enough</span><span class="feedback-answer">${correctAnswer}</span></div>${postContextHtml}`;
     } else {
-      feedback.innerHTML = `<div class="feedback wrong">The answer is <strong>${word.en}</strong></div>`;
+      feedback.innerHTML = `<div class="feedback wrong"><span class="feedback-verdict">✗ Wrong</span><span class="feedback-answer">${correctAnswer}</span></div>${postContextHtml}`;
     }
 
     next.style.display = 'block';

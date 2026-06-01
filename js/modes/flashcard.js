@@ -1,28 +1,38 @@
 // js/modes/flashcard.js
 import { lookupSentence } from '../word-index.js';
 
-export async function render(container, card, onResult) {
+function highlightWord(sentence, word) {
+  const escaped = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return sentence.replace(new RegExp(`(${escaped})`, 'gi'), '<strong>$1</strong>');
+}
+
+export async function render(container, card, onResult, allWords, direction = 'es-en') {
   const { word } = card;
+  const enEs = direction === 'en-es';
   let flipped = false;
   let answered = false;
 
   const bookSentence = await lookupSentence(word.es);
-  const contextHtml = bookSentence
-    ? `<p class="book-sentence" style="margin-top:14px">“${bookSentence}”</p>`
-    : word.example
-      ? `<p class="book-sentence" style="margin-top:14px">“${word.example}”</p>`
-      : '';
+  const rawSentence = bookSentence || word.example || null;
+  const contextHtml = rawSentence
+    ? `<p class="book-sentence" style="margin-top:14px">«${highlightWord(rawSentence, word.es)}»</p>`
+    : '';
+
+  // Front: the prompt. Back: the answer + book sentence.
+  const frontWord = enEs ? word.en : word.es;
+  const backWord  = enEs ? word.es : word.en;
+  const backSize  = enEs ? '2rem' : '1.8rem';
 
   container.innerHTML = `
     <div class="flashcard-wrap" id="fc-wrap" title="Click to flip">
       <div class="flashcard-inner">
         <div class="flashcard-front">
-          <div class="tag">${word.pos}</div>
-          <div class="flashcard-word">${word.es}</div>
+          <!-- <div class="tag">${word.pos}</div> -->
+          <div class="flashcard-word">${frontWord}</div>
           <div class="flashcard-hint">Click to reveal</div>
         </div>
         <div class="flashcard-back">
-          <div class="flashcard-word" style="font-size:1.8rem">${word.en}</div>
+          <div class="flashcard-word" style="font-size:${backSize}">${backWord}</div>
           ${contextHtml}
         </div>
       </div>
