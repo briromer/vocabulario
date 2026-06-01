@@ -1,31 +1,31 @@
 :root {
-  /* Midnight Norway — dark but not void */
-  --bg:             oklch(14% 0.022 220);
-  --surface:        oklch(19% 0.025 218);
-  --surface-raised: oklch(23% 0.027 216);
-  --border:         oklch(33% 0.03 215);
+  /* Macondo Midnight — warm earth dark, not a northern void */
+  --bg:             oklch(11% 0.022 47);
+  --surface:        oklch(16% 0.026 45);
+  --surface-raised: oklch(21% 0.028 43);
+  --border:         oklch(30% 0.028 42);
 
-  /* Text — soft, not stark white */
-  --text:  oklch(87% 0.01 200);
-  --muted: oklch(63% 0.022 210);
+  /* Text — warm ivory, not stark white */
+  --text:  oklch(88% 0.012 75);
+  --muted: oklch(60% 0.018 65);
 
-  /* Aurora amber — warm primary accent */
-  --accent:        oklch(78% 0.17 65);
-  --accent-hover:  oklch(72% 0.18 65);
-  --accent-glow:   oklch(78% 0.17 65 / 0.3);
-  --accent-subtle: oklch(78% 0.17 65 / 0.08);
+  /* Ochre gold — the Buendía yellow, yellow butterflies */
+  --accent:        oklch(73% 0.155 85);
+  --accent-hover:  oklch(67% 0.165 85);
+  --accent-glow:   oklch(73% 0.155 85 / 0.3);
+  --accent-subtle: oklch(73% 0.155 85 / 0.08);
 
-  /* Semantic — muted, pulled into palette */
-  --success:        oklch(64% 0.12 148);
-  --success-subtle: oklch(64% 0.12 148 / 0.14);
-  --error:          oklch(60% 0.12 22);
-  --error-subtle:   oklch(60% 0.12 22 / 0.14);
-  --warning:        oklch(78% 0.14 75);
+  /* Semantic — warm palette, not traffic-light */
+  --success:        oklch(61% 0.11 148);
+  --success-subtle: oklch(61% 0.11 148 / 0.14);
+  --error:          oklch(58% 0.11 28);
+  --error-subtle:   oklch(58% 0.11 28 / 0.14);
+  --warning:        oklch(73% 0.13 80);
 
   --radius:    14px;
   --radius-sm: 8px;
   --shadow:    0 8px 40px oklch(0% 0 0 / 0.5);
-  --glow-card: 0 0 0 1px var(--border), 0 4px 32px oklch(0% 0 0 / 0.35), 0 0 60px oklch(78% 0.17 65 / 0.04);
+  --glow-card: 0 0 0 1px var(--border), 0 4px 32px oklch(0% 0 0 / 0.4), 0 0 60px oklch(73% 0.155 85 / 0.04);
 
   --ease-out-expo:  cubic-bezier(0.16, 1, 0.3, 1);
   --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
@@ -34,9 +34,9 @@
 body {
   background: var(--bg);
   background-image:
-    radial-gradient(ellipse 200% 75% at 80% -20%, oklch(32% 0.2  65  / 0.65), transparent 52%),
-    radial-gradient(ellipse 130% 55% at  5%  0%,  oklch(26% 0.14 195 / 0.6),  transparent 52%),
-    radial-gradient(ellipse  80% 35% at 48%  2%,  oklch(28% 0.16 145 / 0.45), transparent 48%);
+    radial-gradient(ellipse 220% 55% at 50% 130%, oklch(24% 0.13 72  / 0.80), transparent 55%),
+    radial-gradient(ellipse 120% 45% at  0% 110%, oklch(19% 0.10 28  / 0.60), transparent 50%),
+    radial-gradient(ellipse  75% 35% at 100%  90%, oklch(18% 0.08 145 / 0.45), transparent 45%);
   color: var(--text);
   font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   line-height: 1.5;
@@ -48,9 +48,9 @@ body::after {
   inset: 0;
   pointer-events: none;
   z-index: 9999;
-  opacity: 0.055;
+  opacity: 0.07;
   mix-blend-mode: screen;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.55' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
   background-size: 200px 200px;
 }
 
@@ -92,16 +92,20 @@ body::after {
 .btn:active { transform: scale(0.97); }
 .btn-primary { background: var(--accent); color: var(--bg); box-shadow: 0 0 20px var(--accent-glow); }
 .btn-primary:hover { background: var(--accent-hover); box-shadow: 0 0 28px var(--accent-glow); }
+.btn-primary-ghost { background: var(--accent-subtle); color: var(--accent); border: 1px solid oklch(73% 0.155 85 / 0.4); box-shadow: none; }
+.btn-primary-ghost:hover { background: var(--accent); color: var(--bg); box-shadow: 0 0 20px var(--accent-glow); border-color: transparent; }
 .btn-secondary { background: var(--surface); color: var(--text); border: 1px solid var(--border); box-shadow: 0 2px 8px oklch(0% 0 0 / 0.2); }
 .btn-secondary:hover { background: var(--surface-raised); border-color: var(--muted); }
-.btn-success { background: var(--success); color: #fff; }
-.btn-error { background: var(--error); color: #fff; }
+.btn-success { background: var(--success-subtle); color: var(--success); border: 1px solid var(--success); }
+.btn-success:hover { background: var(--success); color: oklch(100% 0 0); }
+.btn-error   { background: var(--error-subtle);   color: var(--error);   border: 1px solid var(--error);   }
+.btn-error:hover   { background: var(--error);   color: oklch(100% 0 0); }
 .btn-full { width: 100%; }
 .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
 
 /* --- Typography --- */
-h1 { font-size: 2rem; font-weight: 400; font-family: 'DM Serif Display', serif; }
-h2 { font-size: 1.4rem; font-weight: 400; font-family: 'DM Serif Display', serif; }
+h1 { font-size: 2rem; font-weight: 400; font-family: 'EB Garamond', Georgia, serif; }
+h2 { font-size: 1.4rem; font-weight: 400; font-family: 'EB Garamond', Georgia, serif; }
 h3 { font-size: 1.1rem; font-weight: 600; }
 .muted { color: var(--muted); font-size: 0.9rem; }
 .tag {
@@ -209,14 +213,17 @@ h3 { font-size: 1.1rem; font-weight: 600; }
 @media (prefers-reduced-motion: reduce) {
   .flashcard-front, .flashcard-back { transition: opacity 0.15s; filter: none !important; }
 }
-.flashcard-word { font-size: 2.4rem; font-weight: 400; font-family: 'DM Serif Display', serif; color: var(--text); }
+.flashcard-word { font-size: 2.4rem; font-weight: 500; font-family: 'EB Garamond', Georgia, serif; color: var(--text); }
 .book-sentence {
-  font-family: 'DM Serif Display', serif;
-  font-style: italic;
-  font-size: 0.95rem;
-  color: var(--muted);
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 1rem;
+  color: oklch(76% 0.016 210);
   line-height: 1.7;
   text-wrap: pretty;
+}
+.book-sentence strong {
+  font-weight: 400;
+  color: var(--text);
 }
 .flashcard-hint { color: var(--muted); font-size: 0.9rem; }
 
@@ -257,13 +264,28 @@ h3 { font-size: 1.1rem; font-weight: 600; }
 
 /* --- Feedback --- */
 .feedback {
-  padding: 12px 16px;
+  padding: 18px 20px;
   border-radius: var(--radius-sm);
-  font-weight: 600;
-  font-size: 0.95rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  text-align: center;
 }
-.feedback.correct { background: var(--success-subtle); color: var(--success); border: 1px solid var(--success); }
-.feedback.wrong   { background: var(--error-subtle);   color: var(--error);   border: 1px solid var(--error);  }
+.feedback-verdict {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+.feedback-answer {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 1.5rem;
+  font-weight: 400;
+  line-height: 1.15;
+}
+.feedback.correct { background: oklch(61% 0.11 148 / 0.2); color: var(--success); border: 1px solid var(--success); }
+.feedback.fuzzy   { background: oklch(73% 0.155 85 / 0.14); color: var(--accent);  border: 1px solid var(--accent-hover); }
+.feedback.wrong   { background: oklch(58% 0.11 28  / 0.2); color: var(--error);   border: 1px solid var(--error); }
 
 /* --- Icon button (ghost, circular hover) --- */
 .btn-icon {
@@ -325,7 +347,7 @@ h3 { font-size: 1.1rem; font-weight: 600; }
 .home-stat + .home-stat { border-left: 1px solid var(--border); }
 .home-stat-value {
   display: block;
-  font-family: 'DM Serif Display', serif;
+  font-family: 'EB Garamond', Georgia, serif;
   font-size: 2.2rem;
   line-height: 1.1;
   color: var(--text);
@@ -362,9 +384,9 @@ h3 { font-size: 1.1rem; font-weight: 600; }
   75%       { transform: translateX(4px); }
 }
 @keyframes correct-pulse {
-  0%   { box-shadow: 0 0 0 0   oklch(64% 0.12 148 / 0.5); }
-  40%  { box-shadow: 0 0 0 8px oklch(64% 0.12 148 / 0.2); }
-  100% { box-shadow: 0 0 0 14px oklch(64% 0.12 148 / 0); }
+  0%   { box-shadow: 0 0 0 0   oklch(61% 0.11 148 / 0.5); }
+  40%  { box-shadow: 0 0 0 8px oklch(61% 0.11 148 / 0.2); }
+  100% { box-shadow: 0 0 0 14px oklch(61% 0.11 148 / 0); }
 }
 @keyframes reveal-up {
   from { opacity: 0; transform: translateY(8px); }
@@ -379,7 +401,7 @@ h3 { font-size: 1.1rem; font-weight: 600; }
 
 /* --- Session end score hero --- */
 .session-score-hero {
-  font-family: 'DM Serif Display', serif;
+  font-family: 'EB Garamond', Georgia, serif;
   font-size: 5.5rem;
   line-height: 1;
   margin-bottom: 16px;
@@ -419,6 +441,29 @@ h3 { font-size: 1.1rem; font-weight: 600; }
 .session-row-left { display: flex; align-items: center; gap: 10px; }
 .session-row-score { font-weight: 700; font-size: 0.9rem; }
 
+/* --- Direction toggle --- */
+.dir-toggle {
+  display: flex;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 3px;
+  gap: 3px;
+}
+.dir-btn {
+  flex: 1;
+  padding: 9px 16px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--muted);
+  transition: background 0.15s, color 0.15s;
+}
+.dir-btn.active {
+  background: var(--surface-raised);
+  color: var(--text);
+}
+
 /* Mobile safe area */
 @supports (padding: env(safe-area-inset-bottom)) {
   #app {
@@ -430,4 +475,140 @@ h3 { font-size: 1.1rem; font-weight: 600; }
   h1 { font-size: 1.6rem; }
   .flashcard-word { font-size: 2rem; }
   .stat-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* --- Word List --- */
+.wl-list { display: flex; flex-direction: column; }
+.wl-row { border-bottom: 1px solid var(--border); }
+.wl-row:first-child { border-top: 1px solid var(--border); }
+.wl-row-main {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 0;
+  text-align: left;
+  transition: background 0.12s;
+  border-radius: var(--radius-sm);
+}
+.wl-row-main:hover,
+.wl-row-main.wl-row-open { background: oklch(16% 0.026 45 / 0.8); }
+.wl-row-words { flex: 1; min-width: 0; }
+.wl-es {
+  display: block;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.wl-en {
+  display: block;
+  font-size: 0.83rem;
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.wl-pos { color: oklch(48% 0.02 215); }
+.wl-row-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+.wl-accuracy { font-size: 0.78rem; color: var(--muted); }
+.wl-status {
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 99px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+.wl-status-new     { background: var(--border); color: var(--muted); }
+.wl-status-due     { background: oklch(73% 0.155 85 / 0.15); color: var(--accent); }
+.wl-status-learned { background: var(--success-subtle); color: var(--success); }
+.wl-arrow {
+  font-size: 1.1rem;
+  color: var(--muted);
+  width: 14px;
+  text-align: center;
+}
+.wl-row-detail { padding: 0 0 12px; }
+.wl-sentence { font-size: 0.92rem; padding: 2px 0 4px; }
+.wl-due-line { font-size: 0.75rem; color: var(--muted); margin-top: 4px; }
+
+/* --- Word List Callouts --- */
+.wl-callouts {
+  display: flex;
+  gap: 12px;
+}
+.wl-callout-card {
+  flex: 1;
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: var(--glow-card);
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.wl-callout-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.wl-callout-word {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 1.05rem;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+}
+.wl-callout-stat {
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+.wl-callout-stat strong {
+  color: var(--accent);
+  font-weight: 700;
+}
+.wl-callout-hardest-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+/* --- Word List Sort Pills --- */
+.wl-sort-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.wl-sort-pill {
+  padding: 6px 14px;
+  border-radius: 99px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  transition: color 0.12s, border-color 0.12s, background 0.12s;
+}
+.wl-sort-pill:hover { color: var(--text); border-color: var(--muted); }
+.wl-sort-pill.active {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: var(--accent-subtle);
+}
+
+@media (max-width: 480px) {
+  .wl-callouts { flex-direction: column; }
 }
