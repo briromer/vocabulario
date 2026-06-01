@@ -52,7 +52,7 @@ Emotional goal: studying vocabulary should feel like reading by candlelight in M
 - Flashcard mode (ES→EN and EN→ES)
 - Multiple choice mode
 - Book sentences from *Cien años de soledad* indexed by word
-- Word list view: searchable, status badges, accuracy %, expandable book sentence
+- Word list view: searchable, status badges, accuracy %, expandable book sentence; stat callouts (hardest words, longest streak, most reviewed); sort pills (Status / Hardest / Easiest / Streak / Most Reviewed)
 - Google Sheets vocabulary source (public CSV, 5-min cache)
 - Settings screen (sheet ID config, cache clear)
 - Index quality report (build script: not-found, near-dups, spelling hints, duplicate EN, short EN)

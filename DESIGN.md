@@ -257,13 +257,14 @@ Blur-dissolve reveal (not 3D flip). Front fades opacity 0 + blur 8px; back fades
 Searchable list of all vocabulary words with SRS status, accuracy, and expandable book sentences.
 
 - **Status badges:** `new` (earth border bg, muted sepia text), `due` (ochre-gold/15% bg, ochre text), `learned` (success-subtle bg, tierra verde text)
-- **Sort order:** due → new → learned, then alphabetical within each group
+- **Stat callouts:** Three hero cards at top of screen (hidden when no words reviewed). Hardest Words (lowest accuracy, min 3 reviews, up to 3 words), Longest Streak (single word, highest streak), Most Reviewed (single word, highest totalReviews). Cards use warm-surface bg, card-glow shadow. Stats number in ochre gold.
+- **Sort pills:** Five pills — Status (default: due → new → learned), Hardest, Easiest, Streak, Most Reviewed. Active pill: ochre border + ochre text + accent-subtle bg. Search composes on top of active sort.
 - **Expand:** Tapping a row reveals `.wl-row-detail` with book sentence (async-loaded, guillemeted) and due date line
 - **Search:** Filters on Spanish word and English translation, case-insensitive
 
 ### Home Screen Quote
 
-Between stats card and Study Now CTA. Randomly selects one of three confirmed García Márquez lines per page load. 1.3rem italic EB Garamond, muted sepia color, centered, max-width 400px. Attribution in 0.85rem, opacity 0.55. Wrapped in guillemets.
+Between stats card and Study Now CTA. Randomly selects one of three confirmed García Márquez lines per page load. 1.3rem italic EB Garamond, `var(--text)` at 72% opacity, centered, max-width 400px. Attribution in 0.85rem EB Garamond, `var(--muted)`, no additional opacity reduction. Wrapped in guillemets.
 
 ### Session End Lines
 
