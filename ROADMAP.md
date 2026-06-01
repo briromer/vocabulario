@@ -9,34 +9,13 @@
 - **Study modes** — Type, Flashcard (blur-dissolve flip), Multiple Choice; keyboard shortcuts throughout
 - **Spaced repetition** — SM-2 algorithm, due cards first then new words, configurable session size
 - **Animation pass** — Screen transitions, progress bar with glow, error shake, correct glow pulse, flashcard action reveal
-- **Delight pass** — Book sentences in DM Serif Display italic, time-of-day Spanish greeting, session-end literary line, console easter egg
-
----
-
-## High Priority
-
-### Index Quality Report
-When `node scripts/build-index.js` runs, output a quality report alongside the index:
-
-- **New words** — words on the sheet not seen in the previous index build
-- **Spelling suggestions** — Spanish words that look suspect (e.g. `indigacion` → did you mean `indagación`?)
-- **Translation suggestions** — English meanings that may be wrong or imprecise: duplicates, very short values, POS mismatches
-- **Not-found words** — words with zero book-sentence matches, flagged for review
-
-Output to stdout and optionally `data/index-report.txt` (gitignored). Report only — no auto-edits.
-
-### EN→ES Direction
-Currently ES→EN only. Add reverse: see English word, type Spanish. No book context needed. Mode select offers both directions per study mode.
-
----
-
-## Medium Priority
-
-### Word List View
-Searchable table: Spanish word, English, part of speech, SRS status (new / due / learned), accuracy %. Click to expand and see book context sentences.
-
-### Deploy to Static Host
-No build step needed — already static. Target: GitHub Pages or Netlify.
+- **Delight pass** — Book sentences in DM Serif Display, time-of-day Spanish greeting, session-end literary line, console easter egg
+- **EN→ES direction** — direction toggle pill on mode select; all three modes support reverse; book sentences hidden during prompt, revealed in feedback; accent-insensitive fuzzy matching in both directions
+- **Visual feedback pass** — type-in verdict chip + large answer display (correct/fuzzy/wrong states); ghost-at-rest Study Now + flashcard mark buttons; book sentence contrast, highlight target word, no italics
+- **Index quality report** — `build-index.js` outputs new words, not-found words, spelling hints, near-duplicate Spanish, duplicate English, short English meanings; snapshot-based new-word detection; saves to `data/index-report.txt`
+- **Word List View** — searchable table with Spanish, English, POS, SRS status (new/due/learned), accuracy %; click to expand book sentence with highlighted target word; due → new → learned sort order
+- **GitHub Pages deploy** — live at https://briromer.github.io/vocabulario/
+- **Word-level stats** — callout strip (3 hardest words, longest streak, most reviewed) + sort pills (Status / Hardest / Easiest / Streak / Most Reviewed) on Word List View
 
 ---
 
@@ -44,4 +23,3 @@ No build step needed — already static. Target: GitHub Pages or Netlify.
 
 - PWA manifest + service worker for offline use and mobile install
 - Export/import progress as JSON
-- Word-level stats view (hardest words, longest streak)
